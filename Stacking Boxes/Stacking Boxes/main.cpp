@@ -103,13 +103,13 @@ while (cin >> n >> k) {
       }
     }
 
-    cout << boxes[tmp.pos].num;
+    cout << boxes[tmp.pos].num; // Devuelve la cajas mas grande y luego la siguiente
     best.pos = tmp.pos;
 
     best.len--;
   }
-  cout << endl;
+  cout << endl; // Espacio entre cajas
 }
 
-return 0;
+return 0; // fin 
 }
