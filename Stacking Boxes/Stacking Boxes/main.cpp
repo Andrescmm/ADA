@@ -86,7 +86,7 @@ while (cin >> n >> k) {
     }
   }
 
-  cout << best.len<< endl;  // Cantidad de cajas que se pueden encajar entre ellas 
+  
 
   cout << boxes[best.pos].num; // Caja mas pequeña
   best.len--; // se reduce la cnatidad de cajas
@@ -106,10 +106,10 @@ while (cin >> n >> k) {
     cout << boxes[tmp.pos].num; // Devuelve la cajas mas grande y luego la siguiente
     best.pos = tmp.pos;
 
-    best.len--;
+    best.len--;// se resta el espacio entre la cajas
   }
   cout << endl; // Espacio entre cajas
 }
 
-return 0; // fin 
+return 0; // fin
 }
