@@ -64,3 +64,8 @@ vector< vector<int> > Grafo :: prim(){
     }
     return arbol;
 }
+
+
+int main(){
+    
+}
