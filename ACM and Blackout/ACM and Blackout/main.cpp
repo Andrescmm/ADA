@@ -1,71 +1,90 @@
-#include <vector>
+#include <iostream>
 
 using namespace std;
-class Grafo
-{
-public:
-    Grafo();
-    Grafo(int nodos);
-    vector< vector<int> > prim();
-private:
-    const int INF = numeric_limits<int>::max();
-    int cantidadNodos; //cantidad de nodos
-    vector< vector<int> > adyacencia; //matriz de adyacencia
-};
-//**** Finaliza Archivo grafo.h *****//
 
-//**** Comienza Archivo grafo.cpp *****//
-Grafo::Grafo()
-{
-}
+// definimos dos constantes
+#define MAXN 105
+#define INF 100000
 
-Grafo::Grafo(int nodos)
-{
-    this->cantidadNodos = nodos;
-        this->adyacencia = vector< vector<int> > (cantidadNodos);
+// Arreglo a de dos dimensiones
+int a[MAXN][MAXN], n, m;
 
-        for(int i = 0; i < cantidadNodos; i++)
-            adyacencia[i] = vector<int> (cantidadNodos, INF);
-}
+int Trace[3][MAXN];
 
-vector< vector<int> > Grafo :: prim(){
-    // uso una copia de adyacencia porque necesito eliminar columnas
-    vector< vector<int> > adyacencia = this->adyacencia;
-    vector< vector<int> > arbol(cantidadNodos);
-    vector<int> markedLines;
-    vector<int> :: iterator vectorIterator;
-
-    // Inicializo las distancias del arbol en INF.
-    for(int i = 0; i < cantidadNodos; i++)
-        arbol[i] = vector<int> (cantidadNodos, INF);
-
-    int padre = 0;
-    int hijo = 0;
-    while(markedLines.size() + 1 < cantidadNodos){
-        padre = hijo;
-        // Marco la fila y elimino la columna del nodo padre.
-        markedLines.push_back(padre);
-        for(int i = 0; i < cantidadNodos; i++)
-            adyacencia[i][padre] = INF;
-
-        // Encuentro la menor distancia entre las filas marcadas.
-        // El nodo padre es la linea marcada y el nodo hijo es la columna del minimo.
-        int min = INF;
-        for(vectorIterator = markedLines.begin(); vectorIterator != markedLines.end(); vectorIterator++)
-            for(int i = 0; i < cantidadNodos; i++)
-                if(min > adyacencia[*vectorIterator][i]){
-                    min = adyacencia[*vectorIterator][i];
-                    padre = *vectorIterator;
-                    hijo = i;
-                }
-
-        arbol[padre][hijo] = min;
-        arbol[hijo][padre] = min;
+// Funcion para ingresar el input
+void ingresoDatos() {
+    int i,j,u,v,cost;
+    cin >> n >> m; // ingresamos las escuelas con sus conexiones
+    // rellenamos las conexiones en dento de la matriz de dos dimensiones
+    for (i=1;i<=n;i++)
+        for (j=1;j<=n;j++)
+            a[i][j] = a[j][i] = INF;
+      
+    for (i=1;i<=m;i++) {
+        cin >> u >> v >> cost;
+        a[u][v] = a[v][u] = cost;
     }
-    return arbol;
 }
 
 
-int main(){
+// Algortimo de prim
+int Prim(int ace) {
+    // Delcaramos variables
+    int u,v,k, d[n+2], min, sum;
+    bool comprobacion[n+2], conectado= true;
     
+    
+    // Recorremos para rellenar el arreglo auxiliar
+    for (v=1;v<=n;v++) {
+        d[v]=INF; comprobacion[v]=true;
+    }
+    d[1] = 0;
+    // recorremos n numero de veces
+    for (k=1;k<=n;k++) {
+        u = 0; min = INF;
+        for (v=1;v<=n;v++)
+            if (comprobacion[v] && d[v]<min) {
+                u = v; min = d[v];
+            }
+        if (u==0) {
+            conectado = false; break;
+        }
+        comprobacion[u] = false;
+        for (v=1;v<=n;v++)
+        if (comprobacion[v] && d[v]>a[u][v]) {
+                d[v] = a[u][v];
+                Trace[ace][v] = u;
+            }
+    }
+    
+    if (!conectado) return -1;
+    sum = 0;
+    for (v=2;v<=n;v++)
+        sum += a[v][Trace[ace][v]];
+    return sum;
+}
+
+//main
+int main() {
+    
+    cout<<"ACM Contest and Blackout"<<endl;
+    
+    int kase, i, primero, segundo, k;
+    cin >> kase;
+    // Bucle que funciona el numero de casos que sean necesarios
+    while (kase--) {
+        ingresoDatos();
+        primero = Prim(0);
+        segundo = INF;
+        for (i=2;i<=n;i++) {
+            int temp = a[i][Trace[0][i]];
+            a[i][Trace[0][i]] = a[Trace[0][i]][i] = INF;
+            
+            k = Prim(1);
+            if (k>=0 && k<segundo)segundo = k;
+            a[i][Trace[0][i]] = a[Trace[0][i]][i] = temp;
+        }
+        if (segundo == INF) segundo = primero;
+        printf("%d %d\n",primero,segundo);
+    }
 }
