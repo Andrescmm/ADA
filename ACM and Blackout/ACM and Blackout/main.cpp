@@ -34,7 +34,7 @@ int Prim(int ace) {
     bool comprobacion[n+2], conectado= true;
     
     
-    // Recorremos para rellenar el arreglo auxiliar
+    // Recorremos para rellenar
     for (v=1;v<=n;v++) {
         d[v]=INF; comprobacion[v]=true;
     }
